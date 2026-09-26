@@ -1,0 +1,6 @@
+{
+  "name": "HealthAdvisor AI - Expert System",
+  "description": "A symptom-based health advisory expert system featuring forward-chaining rule inference, structured clinical knowledge base, explainability engine, and natural language triage.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
