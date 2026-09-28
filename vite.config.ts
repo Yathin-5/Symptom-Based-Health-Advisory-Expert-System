@@ -5,6 +5,8 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    // Required for GitHub Pages: assets are served from /repo-name/ not /
+    base: '/Symptom-Based-Health-Advisory-Expert-System/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

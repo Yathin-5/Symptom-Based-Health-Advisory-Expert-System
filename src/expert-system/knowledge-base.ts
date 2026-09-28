@@ -286,6 +286,15 @@ export const KNOWLEDGE_BASE_FACTS: FactDefinition[] = [
     description: 'Pre-existing conditions such as diabetes, chronic heart failure, COPD, asthma, or immunocompromise.',
     type: 'boolean',
   },
+  {
+    id: 'F064',
+    key: 'infant_with_fever', // BUG-02 fix: used in R014 but was never declared as a FactDefinition
+    name: 'Infant with Active Fever (< 2 years + fever)',
+    category: 'demographic',
+    description: 'Derived compound fact: patient is under 2 years old AND has active fever — high-risk combination for occult bacteremia.',
+    type: 'boolean',
+    isRedFlag: true,
+  },
 ];
 
 export const CATEGORY_DESCRIPTIONS: Record<string, string> = {

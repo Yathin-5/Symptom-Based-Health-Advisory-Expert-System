@@ -87,7 +87,10 @@ export function runInference(input: PatientInput): AssessmentResult {
   });
 
   const topMatchLog = conflictSet[0] || matchedRulesLogs.find((m) => m.ruleId === 'R040');
-  const selectedRule = RULE_BASE.find((r) => r.id === topMatchLog.ruleId) || RULE_BASE[RULE_BASE.length - 1];
+  // BUG-07 fix: guard against topMatchLog being undefined if R040 is ever removed from rule base
+  const selectedRule = topMatchLog
+    ? (RULE_BASE.find((r) => r.id === topMatchLog.ruleId) || RULE_BASE[RULE_BASE.length - 1])
+    : RULE_BASE[RULE_BASE.length - 1];
 
   const conflictRationale = `Evaluated ${RULE_BASE.length} rules. ${matchedRulesLogs.length} rules satisfied premise conditions. Selected ${selectedRule.id} (${selectedRule.name}) based on highest clinical priority (${selectedRule.priority}) and specificity.`;
 

@@ -118,7 +118,7 @@ export const TestSuiteRunner: React.FC<TestSuiteRunnerProps> = ({ onLoadScenario
                     {scenario.id}
                   </span>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900">{scenario.name}</h3>
+                    <h3 className="text-sm font-bold text-slate-900">{scenario.title}</h3>
                     <p className="text-xs text-slate-500">{scenario.description}</p>
                   </div>
                 </div>
@@ -142,7 +142,7 @@ export const TestSuiteRunner: React.FC<TestSuiteRunnerProps> = ({ onLoadScenario
                   )}
 
                   <button
-                    onClick={() => onLoadScenarioIntoForm(scenario.patientInput)}
+                    onClick={() => onLoadScenarioIntoForm(scenario.input)}
                     className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-700 text-xs font-bold transition-colors cursor-pointer"
                   >
                     <span>Load Case</span>
@@ -160,17 +160,17 @@ export const TestSuiteRunner: React.FC<TestSuiteRunnerProps> = ({ onLoadScenario
                   </span>
                   <div className="text-slate-800 space-y-0.5">
                     <div>
-                      <strong>Chief Complaint:</strong> {scenario.patientInput.mainSymptom}
+                      <strong>Chief Complaint:</strong> {scenario.input.mainSymptom}
                     </div>
                     <div>
-                      <strong>Duration:</strong> {scenario.patientInput.durationDays} days &bull; <strong>Severity:</strong> {scenario.patientInput.severity}
+                      <strong>Duration:</strong> {scenario.input.durationDays} days &bull; <strong>Severity:</strong> {scenario.input.severity}
                     </div>
                     <div>
-                      <strong>Age:</strong> {scenario.patientInput.age}y &bull; <strong>Temp:</strong> {scenario.patientInput.temperatureC}°C
+                      <strong>Age:</strong> {scenario.input.age}y &bull; <strong>Temp:</strong> {scenario.input.temperatureC}°C
                     </div>
-                    {scenario.patientInput.additionalSymptoms && scenario.patientInput.additionalSymptoms.length > 0 && (
+                    {scenario.input.additionalSymptoms && scenario.input.additionalSymptoms.length > 0 && (
                       <div className="text-[11px] text-slate-500">
-                        Other symptoms: {scenario.patientInput.additionalSymptoms.join(', ')}
+                        Other symptoms: {scenario.input.additionalSymptoms.join(', ')}
                       </div>
                     )}
                   </div>
@@ -191,7 +191,7 @@ export const TestSuiteRunner: React.FC<TestSuiteRunnerProps> = ({ onLoadScenario
                       <span className="font-mono font-bold text-purple-700">{scenario.expectedRuleId}</span>
                     </div>
                     <div className="text-[11px] text-slate-500">
-                      Category Pattern: {scenario.expectedAdvisoryCategoryContains}
+                      Category: {scenario.expectedRuleId} — {scenario.description}
                     </div>
                   </div>
                 </div>

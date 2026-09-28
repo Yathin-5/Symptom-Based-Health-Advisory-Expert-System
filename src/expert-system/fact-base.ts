@@ -30,18 +30,21 @@ export function buildWorkingMemory(input: PatientInput): WorkingMemory {
   const fatigue = hasSymptom(['fatigue', 'tired', 'exhausted', 'malaise', 'weakness', 'lethargy']);
   const runnyNose = hasSymptom(['runny nose', 'congestion', 'stuffy nose', 'sneezing', 'rhinorrhea', 'cold']);
   const abdominalPain = hasSymptom(['abdominal', 'stomach', 'belly pain', 'cramps', 'gut']);
-  const vomiting = hasSymptom(['vomit', 'throwing up', 'nausea', 'emesis']);
+  const vomiting = hasSymptom(['vomit', 'throwing up', 'emesis']); // BUG-14 fix: nausea is clinically distinct from vomiting
   const diarrhea = hasSymptom(['diarrhea', 'loose stool', 'watery stool']);
   const dizziness = hasSymptom(['dizzy', 'dizziness', 'lightheaded', 'vertigo', 'faint']);
   const shortnessOfBreath = hasSymptom(['breathing', 'breath', 'dyspnea', 'shortness of breath', 'wheezing']) || !!input.severeDyspnea;
   const chestPain = hasSymptom(['chest pain', 'chest pressure', 'angina', 'tight chest']) || !!input.chestPain;
   const stiffNeck = hasSymptom(['stiff neck', 'neck rigidity', 'cant bend neck']) || !!input.stiffNeck;
   const skinRash = hasSymptom(['rash', 'spots', 'petechiae', 'hives', 'urticaria', 'itching', 'itch']);
-  const earPain = hasSymptom(['ear pain', 'earache', 'ear']);
+  const earPain = hasSymptom(['ear pain', 'earache', 'otalgia']); // BUG-13 fix: bare 'ear' matched 'hear', 'fear', etc.
   const bodyAches = hasSymptom(['body ache', 'muscle pain', 'myalgia']);
   const jointPain = hasSymptom(['joint', 'knee', 'back pain', 'spine', 'shoulder', 'hip pain', 'arthritis', 'joint ache']);
   const tinglingNumbness = hasSymptom(['tingling', 'numbness', 'pins and needles', 'paresthesia', 'numb fingers', 'numb feet', 'prickling']);
   const acidReflux = hasSymptom(['acid reflux', 'heartburn', 'gerd', 'indigestion', 'bloating', 'sour burp', 'stomach burning']);
+  // BUG-01 fix: facts defined in knowledge-base but previously never written to working memory
+  const lossOfTasteSmell = hasSymptom(['loss of taste', 'loss of smell', 'anosmia', 'ageusia', 'no taste', 'no smell', 'cant smell', 'cant taste']);
+  const wheezing = hasSymptom(['wheez', 'stridor', 'whistling breath', 'high pitched breath']);
 
   // Red Flags
   const suddenWeakness = hasSymptom(['sudden weakness', 'facial droop', 'slurred speech', 'arm numbness']) || !!input.suddenWeaknessOrNumbness;
@@ -69,6 +72,8 @@ export function buildWorkingMemory(input: PatientInput): WorkingMemory {
   memory['joint_pain'] = jointPain;
   memory['tingling_numbness'] = tinglingNumbness;
   memory['acid_reflux'] = acidReflux;
+  memory['loss_of_taste_smell'] = lossOfTasteSmell; // BUG-01 fix
+  memory['wheezing'] = wheezing;                     // BUG-01 fix
 
   memory['sudden_weakness'] = suddenWeakness;
   memory['confusion'] = confusion;
@@ -76,7 +81,7 @@ export function buildWorkingMemory(input: PatientInput): WorkingMemory {
   memory['unable_to_keep_fluids'] = unableToKeepFluids;
 
   // High Fever
-  memory['high_fever'] = highFeverByTemp || (fever && temp >= 39.5);
+  memory['high_fever'] = highFeverByTemp; // BUG-06 fix: second clause was always a subset of highFeverByTemp
   memory['temperature_val'] = temp;
 
   // Duration
@@ -84,8 +89,8 @@ export function buildWorkingMemory(input: PatientInput): WorkingMemory {
   memory['duration_days'] = duration;
   memory['duration_acute'] = duration <= 3;
   memory['duration_subacute'] = duration >= 4 && duration <= 7;
-  memory['duration_persistent'] = duration > 7;
-  memory['duration_chronic'] = duration > 14;
+  memory['duration_chronic'] = duration > 14;               // BUG-08 fix: chronic checked first
+  memory['duration_persistent'] = duration > 7 && duration <= 14; // mutually exclusive with chronic
 
   // Severity
   const sev = input.severity || 'mild';

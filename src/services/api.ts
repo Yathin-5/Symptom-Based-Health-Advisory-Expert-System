@@ -18,8 +18,9 @@ export async function submitAssessment(input: PatientInput): Promise<AssessmentR
       saveAssessmentLocally(data);
       return data;
     }
-  } catch {
-    // Fallback gracefully to client-side expert system
+  } catch (err) {
+    // BUG-15 fix: surface API errors in dev mode so real bugs aren't silently swallowed
+    if (import.meta.env.DEV) console.warn('[API] Server unreachable, using client-side expert system fallback:', err);
   }
 
   // Client-side fallback
@@ -62,8 +63,9 @@ export async function extractSymptomsWithAI(
       }
       return data;
     }
-  } catch {
-    // Fallback to client-side NLP parser below
+  } catch (err) {
+    // BUG-15 fix: surface API errors in dev mode
+    if (import.meta.env.DEV) console.warn('[API] /api/chat/extract unreachable, using client-side NLP fallback:', err);
   }
 
   // Fallback client-side rule-based extractor
@@ -97,16 +99,18 @@ function clientSideNLPExtractor(
   }
 
   // 2. Check for "Other / Custom Problem" trigger
+  // BUG-09 fix: use word-boundary regex instead of bare .includes('other')
+  // Previously matched substrings like 'mother', 'together', 'another medication', etc.
   const isOtherTrigger = 
     text === 'other' || 
-    text.includes('other') || 
+    /\bother\b/.test(text) || 
     text.includes('something else') || 
     text.includes('other symptom') ||
     text.includes('other problem') ||
     text.includes('different issue') ||
     text.includes('different problem') ||
-    text.includes('another option') ||
-    text.includes('some other');
+    /\banother option\b/.test(text) ||
+    /\bsome other\b/.test(text);
 
   if (isOtherTrigger && (!updated.mainSymptom || text.includes('another') || text.includes('some other'))) {
     updated.mainSymptom = undefined;
@@ -239,7 +243,9 @@ function clientSideNLPExtractor(
   return {
     extractedFacts: updated,
     assistantReply: reply,
-    isReadyForInference: !!updated.mainSymptom && !!updated.durationDays,
+    // BUG-10 fix: severity is required by multiple critical rules (R002, R013, R031, R032, R034)
+  // Previously fired inference engine without severity, causing those rules to silently fail
+  isReadyForInference: !!updated.mainSymptom && !!updated.durationDays && !!updated.severity,
     missingCrucialInfo: missing,
     quickOptions,
   };

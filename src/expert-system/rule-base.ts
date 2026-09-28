@@ -370,7 +370,7 @@ export const RULE_BASE: RuleDefinition[] = [
   {
     id: 'R028',
     name: 'Musculoskeletal Arthralgia / Joint or Back Pain',
-    priority: 42,
+    priority: 38, // BUG-04 fix: was 42 (MODERATE tier 40-69) but riskLevel is LOW; corrected to 38 (LOW tier 10-39)
     category: 'Musculoskeletal',
     logic: 'ALL',
     conditions: [
@@ -388,7 +388,7 @@ export const RULE_BASE: RuleDefinition[] = [
   {
     id: 'R029',
     name: 'Dyspepsia / Gastroesophageal Acid Reflux Protocol',
-    priority: 40,
+    priority: 28, // BUG-05 fix: was 40 (MODERATE tier 40-69) but riskLevel is LOW; corrected to 28 (LOW tier 10-39)
     category: 'Gastrointestinal',
     logic: 'ALL',
     conditions: [
