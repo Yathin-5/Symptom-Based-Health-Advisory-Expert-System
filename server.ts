@@ -104,7 +104,7 @@ Extract the updated facts (merging with current facts), formulate a short empath
 `;
 
       const response = await aiClient.models.generateContent({
-        model: 'gemini-3.8-flash',
+        model: 'gemini-2.0-flash',
         contents: prompt,
         config: {
           systemInstruction,
